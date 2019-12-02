@@ -11,13 +11,10 @@
 var expect = require('chai').expect;
 
 const Like = require('../models/Like');
+const stockHandler = require('../controllers/stockHandler');
+
 const mongoose = require('mongoose');
 
 module.exports = function (app) {
-
-  app.route('/api/stock-prices')
-    .get(function (req, res){
-
-    });
-
+  app.route('/api/stock-prices').get(stockHandler.getStocks);
 };
