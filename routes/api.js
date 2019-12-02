@@ -10,7 +10,7 @@
 
 var expect = require('chai').expect;
 
-const Book = require('../models/Like');
+const Like = require('../models/Like');
 const mongoose = require('mongoose');
 
 module.exports = function (app) {
