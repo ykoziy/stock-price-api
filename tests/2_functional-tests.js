@@ -16,7 +16,7 @@ chai.use(chaiHttp);
 suite('Functional Tests', function() {
 
     suite('GET /api/stock-prices => stockData object', function() {
-      let likeCount;
+      this.timeout(3000);
 
       test('1 stock', function(done) {
        chai.request(server)
@@ -28,13 +28,23 @@ suite('Functional Tests', function() {
           assert.property(res.body.stockData, "price");
           assert.property(res.body.stockData, "likes");
           assert.equal(res.body.stockData.stock, "GOOG");
-          likeCount = res.body.stockData.likes;
           done();
         });
       });
 
       test('1 stock with like', function(done) {
-
+        chai.request(server)
+         .get('/api/stock-prices')
+         .query({stock: 'goog', like: true})
+         .end(function(err, res){
+           assert.equal(res.status, 200);
+           assert.property(res.body.stockData, "stock");
+           assert.property(res.body.stockData, "price");
+           assert.property(res.body.stockData, "likes");
+           assert.equal(res.body.stockData.stock, "GOOG");
+           assert.equal(res.body.stockData.likes, 1);
+           done();
+         });
       });
 
       test('1 stock with like again (ensure likes arent double counted)', function(done) {
