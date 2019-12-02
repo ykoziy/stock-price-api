@@ -16,15 +16,20 @@ chai.use(chaiHttp);
 suite('Functional Tests', function() {
 
     suite('GET /api/stock-prices => stockData object', function() {
+      let likeCount;
+
       test('1 stock', function(done) {
        chai.request(server)
         .get('/api/stock-prices')
         .query({stock: 'goog'})
         .end(function(err, res){
+          console.log(res.body);
+          assert.equal(res.status, 200);
           assert.property(res.body.stockData, "stock");
           assert.property(res.body.stockData, "price");
           assert.property(res.body.stockData, "likes");
           assert.equal(res.body.stockData.stock, "GOOG");
+          likeCount = res.body.stockData.likes;
           done();
         });
       });
