@@ -15,16 +15,9 @@ async function getData(url) {
 }
 
 async function insertLike(stockSymbol, ip) {
-  const symbolData = await Like.find({stock: stockSymbol});
-  if (symbolData.length != 0) {
-    if (symbolData[0].ips.indexOf(ip) == -1) {
-      let doc = await Like.insertOrUpdate(false, stockSymbol, ip);
-      return doc;
-    }
-  } else {
-    let doc = await Like.insertOrUpdate(true, stockSymbol, ip);
-    return doc;
-  }
+  let options = {upsert: true, new: true};
+  let doc = await Like.findOneAndUpdate({stock: stockSymbol}, {$addToSet: {ips: ip}}, options);
+  return doc;
 }
 
 async function getSingleStock(stockSymbol, like, ip) {

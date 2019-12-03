@@ -10,18 +10,4 @@ LikeSchema.statics.getLikes = async function(symbol) {
   return (data.length == 0) ? 0 : data[0].ips.length;
 }
 
-LikeSchema.statics.insertOrUpdate = async function(isUpsert, stockSymbol, ip) {
-  let options = {new: true};
-  if (isUpsert) {
-    options.upsert = true;
-  }
-  try {
-    let doc = await this.findOneAndUpdate({stock: stockSymbol}, {$addToSet: {ips: ip}}, options);
-    return doc;
-  } catch (error) {
-    console.error(error);
-    return {error: error.message};
-  }
-}
-
 module.exports = mongoose.model('Like', LikeSchema);
