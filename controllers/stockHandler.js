@@ -32,8 +32,13 @@ async function getSingleStock(stockSymbol, like, ip) {
     if (like == true)
     {
       const newData = await insertLike(symbol, ip).catch((err) => {
-        console.error('Error inserting likes. ' + err);
+        let errorMsg = 'Error getting likes. ' + err;
+        console.error(errorMsg);
+        return {error: errorMsg};
       });
+      if (newData.error) {
+        return newData;
+      }
     }
     let likes = await Like.getLikes(symbol).catch((err) => {
       let errorMsg = 'Error getting likes. ' + err;
@@ -60,7 +65,7 @@ async function getStocks(req, res, next) {
     const stockDataA = await getSingleStock(stockSymbol[0], like, ip);
     const stockDataB = await getSingleStock(stockSymbol[1], like, ip);
     if(stockDataA.error || stockDataB.error) {
-      return res.json(stockData);
+      return res.json({stockData: [stockDataA, stockDataB]});
     }
     stockDataA.rel_likes = stockDataA.likes - stockDataB.likes;
     stockDataB.rel_likes = stockDataB.likes - stockDataA.likes;
