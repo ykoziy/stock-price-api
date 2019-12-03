@@ -16,8 +16,7 @@ async function getData(url) {
 
 async function insertLike(stockSymbol, ip) {
   const symbolData = await Like.find({stock: stockSymbol});
-
-  if (symbolData.length) {
+  if (symbolData.length != 0) {
     if (symbolData[0].ips.indexOf(ip) == -1) {
       let doc = await Like.insertOrUpdate(false, stockSymbol, ip);
       return doc;
@@ -70,7 +69,12 @@ async function getStocks(req, res, next) {
     if(stockDataA.error || stockDataB.error) {
       return res.json(stockData);
     }
-    return res.json({stockData: [stockDataA, stockDataB]});
+    stockDataA.rel_likes = stockDataA.likes - stockDataB.likes;
+    stockDataB.rel_likes = stockDataB.likes - stockDataA.likes;
+    delete stockDataA.likes;
+    delete stockDataB.likes;
+    return res.json(
+      {stockData: [stockDataA, stockDataB]});
   }
 
   const stockData = await getSingleStock(stockSymbol, like, ip);
