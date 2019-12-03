@@ -14,31 +14,16 @@ async function getData(url) {
     }
 }
 
-async function insertOrUpdate(isUpsert, stockSymbol, ip) {
-  let options = {new: true};
-  if (isUpsert) {
-    options.upsert = true;
-  }
-
-  try {
-    let doc = await Like.findOneAndUpdate({stock: stockSymbol}, {$addToSet: {ips: ip}, $inc: {likes: 1}}, options);
-    return doc;
-  } catch (error) {
-    console.error(error);
-    return {error: error.message};
-  }
-}
-
 async function insertLike(stockSymbol, ip) {
   const symbolData = await Like.find({stock: stockSymbol});
 
   if (symbolData.length) {
     if (symbolData[0].ips.indexOf(ip) == -1) {
-      let doc = await insertOrUpdate(false, stockSymbol, ip);
+      let doc = await Like.insertOrUpdate(false, stockSymbol, ip);
       return doc;
     }
   } else {
-    let doc = await insertOrUpdate(true, stockSymbol, ip);
+    let doc = await Like.insertOrUpdate(true, stockSymbol, ip);
     return doc;
   }
 }
