@@ -71,7 +71,6 @@ async function getSingleStock(stockSymbol, like, ip) {
 
 async function getStocks(req, res, next) {
   const stockSymbol = req.query.stock;
-
   const ip = req.ip;
   let like;
   if (req.query.like === undefined) {
@@ -79,6 +78,18 @@ async function getStocks(req, res, next) {
   } else {
     like = req.query.like !== false;
   }
+
+  if (Array.isArray(stockSymbol) && stockSymbol.length == 2) {
+    //two symbols
+    console.log('two symbols ' + stockSymbol);
+    const stockDataA = await getSingleStock(stockSymbol[0], like, ip);
+    const stockDataB = await getSingleStock(stockSymbol[1], like, ip);
+    if(stockDataA.error || stockDataB.error) {
+      return res.json(stockData);
+    }
+    return res.json({stockData: [stockDataA, stockDataB]});
+  }
+
   const stockData = await getSingleStock(stockSymbol, like, ip);
   if (stockData.error) {
     return res.json(stockData);
