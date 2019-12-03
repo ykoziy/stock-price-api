@@ -1,17 +1,15 @@
 const fetch = require("node-fetch");
 const Like = require('../models/Like');
 
-async function getData(url) {
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      if (typeof data != 'object') {
-        return {error: 'unknown symbol'};
-      }
-      return data;
-    } catch (error) {
-      return {error: 'external source error'}
+async function getData(symbol) {
+    const apiUrl = `https://repeated-alpaca.glitch.me/v1/stock/${symbol}/quote`;
+    const data = await fetch(apiUrl)
+                 .then(res => res.json())
+                 .catch((error) => {return {error: 'external source error'}});
+    if (typeof data != 'object') {
+      return {error: 'unknown symbol'};
     }
+    return data;
 }
 
 async function insertLike(stockSymbol, ip) {
@@ -22,8 +20,7 @@ async function insertLike(stockSymbol, ip) {
 
 async function getSingleStock(stockSymbol, like, ip) {
     const symbol = stockSymbol.toUpperCase();
-    const apiUrl = `https://repeated-alpaca.glitch.me/v1/stock/${symbol}/quote`;
-    const stockData = await getData(apiUrl);
+    const stockData = await getData(stockSymbol);
 
     if (stockData.error) {
       return stockData;
