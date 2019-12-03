@@ -65,10 +65,9 @@ suite('Functional Tests', function() {
       test('2 stocks', function(done) {
         chai.request(server)
           .get('/api/stock-prices')
-          .query({stock: ['MSFT','GOOG' ]})
+          .query({stock: ['MSFT','GOOG']})
           .end(function(err, res){
             assert.equal(res.status, 200);
-            console.log(res.body);
             assert.property(res.body.stockData[0], "stock");
             assert.property(res.body.stockData[0], "price");
             assert.property(res.body.stockData[0], "likes");
@@ -82,7 +81,23 @@ suite('Functional Tests', function() {
       });
 
       test('2 stocks with like', function(done) {
-
+        chai.request(server)
+          .get('/api/stock-prices')
+          .query({stock: ['MSFT','GOOG'], like: true})
+          .end(function(err, res){
+            assert.equal(res.status, 200);
+            assert.property(res.body.stockData[0], "stock");
+            assert.property(res.body.stockData[0], "price");
+            assert.property(res.body.stockData[0], "likes");
+            assert.equal(res.body.stockData[0].likes, 1);
+            assert.equal(res.body.stockData[0].stock, "MSFT");
+            assert.property(res.body.stockData[1], "stock");
+            assert.property(res.body.stockData[1], "price");
+            assert.property(res.body.stockData[1], "likes");
+            assert.equal(res.body.stockData[1].likes, 1);
+            assert.equal(res.body.stockData[0].stock, "MSFT");
+            done();
+          });
       });
 
     });
