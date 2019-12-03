@@ -8,7 +8,7 @@ let LikeSchema = new Schema({
 
 LikeSchema.statics.getLikes = async function(symbol) {
   const data = await this.find({stock: symbol});
-  return !data ? data.likes : 0;
+  return !data.length ? 0 : data[0].likes;
 };
 
 module.exports = mongoose.model('Like', LikeSchema);
