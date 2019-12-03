@@ -16,7 +16,7 @@ chai.use(chaiHttp);
 suite('Functional Tests', function() {
 
     suite('GET /api/stock-prices => stockData object', function() {
-      this.timeout(3000);
+      this.timeout(6000);
 
       test('1 stock', function(done) {
        chai.request(server)
