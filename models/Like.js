@@ -2,13 +2,12 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 let LikeSchema = new Schema({
   stock: {type: String, required: true},
-  likes: {type: Number, required: true},
   ips: [String]
 });
 
 LikeSchema.statics.getLikes = async function(symbol) {
   const data = await this.find({stock: symbol});
-  return !data.length ? 0 : data[0].likes;
+  return (data.length == 0) ? 0 : data[0].ips.length;
 }
 
 LikeSchema.statics.insertOrUpdate = async function(isUpsert, stockSymbol, ip) {
@@ -17,7 +16,7 @@ LikeSchema.statics.insertOrUpdate = async function(isUpsert, stockSymbol, ip) {
     options.upsert = true;
   }
   try {
-    let doc = await this.findOneAndUpdate({stock: stockSymbol}, {$addToSet: {ips: ip}, $inc: {likes: 1}}, options);
+    let doc = await this.findOneAndUpdate({stock: stockSymbol}, {$addToSet: {ips: ip}}, options);
     return doc;
   } catch (error) {
     console.error(error);
