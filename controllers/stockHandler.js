@@ -65,8 +65,6 @@ async function getStocks(req, res, next) {
   }
 
   if (Array.isArray(stockSymbol) && stockSymbol.length == 2) {
-    //two symbols
-    console.log('two symbols ' + stockSymbol);
     const stockDataA = await getSingleStock(stockSymbol[0], like, ip);
     const stockDataB = await getSingleStock(stockSymbol[1], like, ip);
     if(stockDataA.error || stockDataB.error) {
