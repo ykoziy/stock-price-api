@@ -16,5 +16,9 @@ const stockHandler = require('../controllers/stockHandler');
 const mongoose = require('mongoose');
 
 module.exports = function (app) {
-  app.route('/api/stock-prices').get(stockHandler.getStocks);
+  app.get('/api/stock-prices', stockHandler.getStocks);
+
+  app.get('/', function (req, res) {
+    res.sendFile(process.cwd() + '/views/index.html');
+  });
 };
